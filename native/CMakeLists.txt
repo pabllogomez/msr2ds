@@ -370,3 +370,12 @@ if(WIN32)
   set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/direct_embed.rc PROPERTIES OBJECT_DEPENDS ${MSR_DIRECT_EXE})
   add_dependencies(msr-native msr-native-direct)
 endif()
+
+# The achievements' conditions (runtime/msr/achievements_eval.cpp), tested without the game: ctest --test-dir <build>.
+# Not when cross-compiling (the Android app), where nothing could run them.
+if (NOT ANDROID AND NOT CMAKE_CROSSCOMPILING)
+    enable_testing()
+    add_executable(msr-achievements-test runtime/msr/achievements_eval.cpp tests/achievements_eval_test.cpp)
+    target_include_directories(msr-achievements-test PRIVATE runtime/msr)
+    add_test(NAME achievements_eval COMMAND msr-achievements-test)
+endif()
