@@ -9,8 +9,10 @@
 #   scenario s010_area1     the map she is in (packs/maps/<folder>)
 #   metroids_left <= N      the Metroids left, as the touch screen's bar counts them
 #
-# Item names marked UNVERIFIED in docs/conquistas-estado-do-jogo.md are guessed: the log names, at the first moment in
-# play, every item name the game has ("achievements: the game's item names: ...") and each name of this list it lacks.
+# Every item name below is one the game has (its dump's strings, 2026-11-26). Energy Tanks have no item of their own:
+# ITEM_MAX_LIFE is the most energy, 99 and 100 for each tank (UNVERIFIED, docs/conquistas-estado-do-jogo.md). The log
+# names, at the first moment in play, every item name found ("achievements: the game's item names: ...") and each name
+# of this list whose key global was not found.
 
 # ---- Items (Metroid II's) ----
 bomb         | Items | Bombs Away       | Find the Morph Ball Bombs.                        | item ITEM_WEAPON_BOMB >= 1
@@ -24,7 +26,7 @@ space_jump   | Items | No Ceiling       | Find the Space Jump.                  
 spazer       | Items | Three Abreast    | Find the Spazer Beam.                             | item ITEM_WEAPON_SPAZER_BEAM >= 1
 plasma_beam  | Items | Straight Through | Find the Plasma Beam.                             | item ITEM_WEAPON_PLASMA_BEAM >= 1
 screw_attack | Items | Spinning Blade   | Find the Screw Attack.                            | item ITEM_SCREW_ATTACK >= 1
-energy_tank  | Items | Reserve Power    | Find an Energy Tank.                              | item ITEM_ENERGY_TANKS >= 1
+energy_tank  | Items | Reserve Power    | Find an Energy Tank.                              | item ITEM_MAX_LIFE >= 199
 
 # ---- Items the remake added ----
 grapple_beam | Remake | Hooked           | Find the Grapple Beam.                            | item ITEM_WEAPON_GRAPPLE_BEAM >= 1
@@ -40,7 +42,7 @@ phase_drift  | Remake | Slow Motion      | Learn the Phase Drift.               
 missiles_50  | Collectibles | Stocked Up    | Carry 50 Missiles.                            | item ITEM_WEAPON_MISSILE_MAX >= 50
 missiles_100 | Collectibles | Arsenal       | Carry 100 Missiles.                           | item ITEM_WEAPON_MISSILE_MAX >= 100
 missiles_175 | Collectibles | Full Magazine | Carry 175 Missiles, the most there is.        | item ITEM_WEAPON_MISSILE_MAX >= 175
-energy_tanks | Collectibles | Iron Will     | Find all 10 Energy Tanks.                     | item ITEM_ENERGY_TANKS >= 10
+energy_tanks | Collectibles | Iron Will     | Find all 10 Energy Tanks.                     | item ITEM_MAX_LIFE >= 1099
 
 # ---- Metroids ----
 # The inventory counts the Metroids defeated, not their kind: Metroid II's Gamma, Zeta and Omega achievements are

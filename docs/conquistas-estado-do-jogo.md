@@ -34,24 +34,28 @@ Fonte: `src/msr/cheats.h`, comentários das linhas 110–121, e `native/runtime/
 | Power Bombs máx. | `0x70872C`, `ITEM_WEAPON_POWER_BOMB_MAX` | float | `cheats.h` | Verificado |
 | Área atual | Pasta do mapa do pacote lido (`packs/maps/<s>/<s>.pkg`), avisada por `layered_fs.cpp` | string | `discord.cpp` (`msr_discord_scenario`, tabela `Scenarios`) | Verificado |
 | Energia atual/máx. | `CPlayerLifeComponent` (vtable `0x6D4F98`, máx. em `+0x34`, atual em `+0x38`), achado por varredura do heap | float | `cheats.h`, linha 153 | Verificado, mas **não usado**: a varredura é cara, e o inventário tem um item para isso (abaixo) |
-| Bombas | `ITEM_WEAPON_BOMB` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Spider Ball | `ITEM_SPIDER_BALL` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Spring Ball | `ITEM_SPRING_BALL` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Varia Suit | `ITEM_VARIA_SUIT` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Gravity Suit | `ITEM_GRAVITY_SUIT` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Hi-Jump | `ITEM_HIGH_JUMP_BOOTS` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Space Jump | `ITEM_SPACE_JUMP` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Screw Attack | `ITEM_SCREW_ATTACK` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Energy Tanks (contagem) | `ITEM_ENERGY_TANKS` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Scan Pulse | `ITEM_SPECIAL_ENERGY_SCANNING_PULSE` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Lightning Armor | `ITEM_SPECIAL_ENERGY_ENERGY_SHIELD` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Beam Burst | `ITEM_SPECIAL_ENERGY_ENERGY_WAVE` | float | Nome deduzido | **NÃO VERIFICADO** |
-| Phase Drift | `ITEM_SPECIAL_ENERGY_PHASE_DISPLACEMENT` | float | Nome deduzido | **NÃO VERIFICADO** |
+| Bombas | `ITEM_WEAPON_BOMB` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Spider Ball | `ITEM_SPIDER_BALL` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Spring Ball | `ITEM_SPRING_BALL` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Varia Suit | `ITEM_VARIA_SUIT` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Gravity Suit | `ITEM_GRAVITY_SUIT` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Hi-Jump | `ITEM_HIGH_JUMP_BOOTS` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Space Jump | `ITEM_SPACE_JUMP` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Screw Attack | `ITEM_SCREW_ATTACK` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Energy Tanks | `ITEM_MAX_LIFE` (energia máxima: 99 + 100 por tanque → 1º tanque = 199, os 10 = 1099) | float | Nome confirmado no dump. Não existe item próprio de contagem (`ITEM_ENERGY_TANKS` não está no jogo) | Nome ✅; base 99, +100 e total de 10 **NÃO VERIFICADOS** |
+| Scan Pulse | `ITEM_SPECIAL_ENERGY_SCANNING_PULSE` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Lightning Armor | `ITEM_SPECIAL_ENERGY_ENERGY_SHIELD` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Beam Burst | `ITEM_SPECIAL_ENERGY_ENERGY_WAVE` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Phase Drift | `ITEM_SPECIAL_ENERGY_PHASE_DISPLACEMENT` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
 | Volta à superfície depois da Rainha | Área `s110_surfaceb` | string | Está na tabela `Scenarios` do `discord.cpp` como segunda superfície | **NÃO VERIFICADO** que só se chega lá depois da Rainha |
 
-### De onde vêm os nomes deduzidos
+### Como os nomes foram confirmados
 
-Os nomes **NÃO VERIFICADOS** seguem o padrão dos que estão confirmados (`ITEM_WEAPON_*` para armas, `ITEM_*` para o resto) e os nomes internos que ferramentas de mod do jogo usam. O repositório não traz uma tabela de nomes: `tools/msr/recomp` só tem scripts de análise e emissão, e o código recompilado não é distribuído.
+Em 26/11/2026, os identificadores `ITEM_*` foram extraídos do dump USA do jogo com `strings`, numa checagem só de leitura feita pelo dono do fork. Todos os nomes da lista estão no jogo, menos `ITEM_ENERGY_TANKS`, que não existe. Os Energy Tanks passaram a usar `ITEM_MAX_LIFE`.
+
+Os `ITEM_ACQUIRED_*` que também aparecem no dump são textos das mensagens de item obtido, não itens do inventário.
+
+Isso confirma que os **nomes** existem, mas não que a varredura encontra as **chaves** deles na memória. Essa parte continua **NÃO VERIFICADA** até a primeira linha `achievements: the game's item names: ...` aparecer no log.
 
 ### Como as chaves que faltam são encontradas
 
@@ -92,7 +96,7 @@ Galerias, Fusion Mode, Hard Mode e Fusion Suit só liberam conteúdo ou mudam a 
 | Bombas, Ice, Spider Ball, Varia, Wave, Hi-Jump, Spring Ball, Space Jump, Spazer, Plasma, Screw Attack, 1º Energy Tank | Mantidas | Todos existem no remake |
 | — | Novas: Grapple Beam, Gravity Suit, Super Missiles, Power Bombs e as 4 habilidades Aeion | Itens que o Metroid II não tem |
 | Marcos de mísseis | 50, 100 e 175 (o máximo do remake) | O máximo é diferente |
-| Todos os Energy Tanks | 10 | Total do remake. **NÃO VERIFICADO:** confira se `ITEM_ENERGY_TANKS` conta tanques. Se contar energia, troque o limite |
+| Todos os Energy Tanks | Energia máxima ≥ 1099 (`ITEM_MAX_LIFE`) | O jogo não tem um item que conte tanques. **NÃO VERIFICADO:** que a energia comece em 99, cada tanque some 100 e o total seja 10 |
 | Gamma, Zeta, Omega | Trocados por 10 e 25 Metroids derrotados, e por "contador de Metroids em zero" | O inventário conta os Metroids derrotados, não o tipo. Volto a usar os nomes do Metroid II quando aparecer uma flag por tipo (blackboard ou Lua do jogo) |
 | Rainha | "Voltar à superfície depois da Rainha" (área `s110_surfaceb`) | Não há flag de chefe conhecida |
 
@@ -112,7 +116,7 @@ Prepare antes:
 | `ice_beam` | Ao pegar o Ice Beam | Toast "Cold Front" |
 | `bomb` **(NÃO VERIFICADO)** | Morph Ball Bombs (Área 1) | Toast "Bombs Away". Se não aparecer, procure no log o nome certo da bomba |
 | `scan_pulse` **(NÃO VERIFICADO)** | Primeira habilidade Aeion (Scan Pulse) | Toast "Lay of the Land" |
-| `energy_tank` **(NÃO VERIFICADO)** | Primeiro Energy Tank | Toast "Reserve Power". Se não aparecer, veja no log se existe um nome como `ITEM_MAX_LIFE` |
+| `energy_tank` **(NÃO VERIFICADO)** | Primeiro Energy Tank | Toast "Reserve Power". Se aparecer antes do tanque ou não aparecer, a energia inicial não é 99: anote a energia máxima do HUD antes e depois do tanque |
 | `missiles_50` | Ao chegar a 50 mísseis de capacidade | Toast "Stocked Up" |
 | Persistência | Desbloqueie algo, feche o jogo pelo menu e depois mate o processo | `user/msr/achievements.ini` tem `[unlocked]` com o id e a data, e a contagem continua ao reabrir |
 | Bloqueio por cheat | Ligue "Unlimited missiles" e pegue um item novo | Nada desbloqueia, e o log diz `a cheat is on`. Desligue: o item já obtido desbloqueia no tick seguinte |
