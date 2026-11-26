@@ -52,3 +52,4 @@ metroids_10  | Metroids | Exterminator  | Defeat 10 Metroids.                   
 metroids_25  | Metroids | Nearly Extinct| Defeat 25 Metroids.                            | item ITEM_METROID_COUNT >= 25
 metroids_all | Metroids | Last of Them  | Bring the Metroid counter down to zero.        | metroids_left <= 0
 queen        | Metroids | Long Live     | Return to the surface after the Queen.         | scenario s110_surfaceb
+baby_metroid | Metroids | Imprinted     | Meet the last Metroid as it hatches.           | item ITEM_BABY_HATCHLING >= 1
