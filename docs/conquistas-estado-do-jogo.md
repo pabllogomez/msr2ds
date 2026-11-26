@@ -47,6 +47,7 @@ Fonte: `src/msr/cheats.h`, comentários das linhas 110–121, e `native/runtime/
 | Lightning Armor | `ITEM_SPECIAL_ENERGY_ENERGY_SHIELD` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
 | Beam Burst | `ITEM_SPECIAL_ENERGY_ENERGY_WAVE` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
 | Phase Drift | `ITEM_SPECIAL_ENERGY_PHASE_DISPLACEMENT` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA** |
+| Bebê Metroid | `ITEM_BABY_HATCHLING` | float | Nome confirmado no dump | Nome ✅; chave **NÃO VERIFICADA**; **NÃO VERIFICADO** que vire ≥ 1 quando o bebê nasce (pode ser outro valor ou só no fim) |
 | Volta à superfície depois da Rainha | Área `s110_surfaceb` | string | Está na tabela `Scenarios` do `discord.cpp` como segunda superfície | **NÃO VERIFICADO** que só se chega lá depois da Rainha |
 
 ### Como os nomes foram confirmados
@@ -99,6 +100,7 @@ Galerias, Fusion Mode, Hard Mode e Fusion Suit só liberam conteúdo ou mudam a 
 | Todos os Energy Tanks | Energia máxima ≥ 1099 (`ITEM_MAX_LIFE`) | O jogo não tem um item que conte tanques. **NÃO VERIFICADO:** que a energia comece em 99, cada tanque some 100 e o total seja 10 |
 | Gamma, Zeta, Omega | Trocados por 10 e 25 Metroids derrotados, e por "contador de Metroids em zero" | O inventário conta os Metroids derrotados, não o tipo. Volto a usar os nomes do Metroid II quando aparecer uma flag por tipo (blackboard ou Lua do jogo) |
 | Rainha | "Voltar à superfície depois da Rainha" (área `s110_surfaceb`) | Não há flag de chefe conhecida |
+| Bebê Metroid (o final clássico) | `baby_metroid`, "Imprinted" (`ITEM_BABY_HATCHLING ≥ 1`) | O item existe no inventário do remake |
 
 ## Como validar no Steam Deck
 
@@ -109,7 +111,7 @@ Prepare antes:
 
 | O que validar | Onde no jogo | Resultado esperado |
 |---|---|---|
-| Lista e progresso carregados | Ao abrir o jogo | `achievements: 29 in the built-in list, 0 unlocked (on)` |
+| Lista e progresso carregados | Ao abrir o jogo | `achievements: 30 in the built-in list, 0 unlocked (on)` |
 | Varredura das chaves | Primeiros 2 s jogando, em qualquer save | Linha `the game's item names: ...`. Anote os nomes `no item ...` e mande para corrigirmos a lista |
 | Mecanismo verificado | Save novo, no começo do jogo | Nada desbloqueia nos primeiros segundos. Se algo desbloquear, a leitura está errada |
 | `first_metroid` | Primeiro Metroid Alpha (Área 1) | Toast "First Contact" |
@@ -118,6 +120,7 @@ Prepare antes:
 | `scan_pulse` **(NÃO VERIFICADO)** | Primeira habilidade Aeion (Scan Pulse) | Toast "Lay of the Land" |
 | `energy_tank` **(NÃO VERIFICADO)** | Primeiro Energy Tank | Toast "Reserve Power". Se aparecer antes do tanque ou não aparecer, a energia inicial não é 99: anote a energia máxima do HUD antes e depois do tanque |
 | `missiles_50` | Ao chegar a 50 mísseis de capacidade | Toast "Stocked Up" |
+| `baby_metroid` **(NÃO VERIFICADO)** | Quando o ovo choca, depois da Rainha | Toast "Imprinted". Se não aparecer, ou aparecer antes, anote o momento: o valor do item pode significar outra coisa |
 | Persistência | Desbloqueie algo, feche o jogo pelo menu e depois mate o processo | `user/msr/achievements.ini` tem `[unlocked]` com o id e a data, e a contagem continua ao reabrir |
 | Bloqueio por cheat | Ligue "Unlimited missiles" e pegue um item novo | Nada desbloqueia, e o log diz `a cheat is on`. Desligue: o item já obtido desbloqueia no tick seguinte |
 | Notificações desligadas | Desligue "Achievement notices" | Desbloqueia (aparece no log e no .ini), mas sem toast |
