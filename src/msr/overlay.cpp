@@ -26,6 +26,9 @@
 #include "msr/frame_rate.h"
 #include "msr/overlay.h"
 #include "msr/presentation.h"
+#ifdef MSR_NATIVE
+#include "msr/achievements.h"   // native/runtime/msr: the achievements' notice
+#endif
 
 namespace MSR {
 namespace {
@@ -877,6 +880,11 @@ void Overlay::BuildFrame(std::uint32_t width, std::uint32_t height, void (*new_f
     if (GetPlayerSettings().show_fps && !launching) {
         DrawFps(scale, static_cast<float>(width));
     }
+#ifdef MSR_NATIVE
+    if (!launching) {
+        msr_achievements_draw(scale, static_cast<float>(width), static_cast<float>(height));
+    }
+#endif
     if (show) {
         if (!was_visible) {
             ImGui::SetNextWindowFocus();
@@ -1584,6 +1592,17 @@ void Overlay::DrawMenu(float scale, bool appearing) {
             player_changed |= OnOff("##discord", &p.discord_presence);
             Note("Your Discord profile shows that you're playing msr2ds, the area you're in and the Metroids left. "
                  "It needs the Discord app open on this computer.");
+#endif
+#ifdef MSR_NATIVE
+            // msr-native: local achievements (runtime/msr/achievements.cpp), on and off at once
+            row("Achievements");
+            player_changed |= OnOff("##achievements", &p.achievements);
+            row("Achievement notices");
+            ImGui::BeginDisabled(!p.achievements);
+            player_changed |= OnOff("##achievementnotices", &p.achievement_notices);
+            ImGui::EndDisabled();
+            Note("Unlocked as you play and kept on this computer only (user/msr/achievements.ini). Nothing "
+                 "unlocks while a cheat is on.");
 #endif
             if (!l.active) {   // (the launcher's is under Play)
                 original_row();

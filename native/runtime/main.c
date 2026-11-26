@@ -26,6 +26,7 @@
 #include "input.h"
 #include "log.h"
 #include "msr/msr.h"
+#include "msr/achievements.h"
 #include <SDL_filesystem.h>
 #include <math.h>
 #include <pthread.h>
@@ -832,6 +833,7 @@ int main(int argc, char **argv) {
                                                                           place of the launcher's --layout=single */
     else if (msr_settings_aspect_4_3()) video_option("window_aspect", "4:3");   /* 4:3 mode: a window of its shape */
     msr_discord_start(0);   /* Discord Rich Presence, when the player's setting has it (msr/discord.cpp) */
+    msr_achievements_start();   /* the achievements' list and progress (msr/achievements.cpp) */
     {   /* the game mods and texture packs, found as the launcher finds them: <user>/mods, <user>/msr/settings.ini */
         char msr_dir[4096], user_dir[4096];
         folder_of(settings, msr_dir, sizeof msr_dir);
@@ -934,6 +936,7 @@ int main(int argc, char **argv) {
         else if (t - next > 0.25) next = t;          /* fell behind: don't try to catch up */
         if (t - last_stat >= 2.0) {
             msr_discord_tick();   /* the Metroids left, for Discord Rich Presence */
+            msr_achievements_tick();   /* what unlocks now, when the player's setting has achievements */
             stage_set(STAGE_MAIN, "writing the stats and the log");
             uint32_t lists, draws; pica_stats(&lists, &draws);
             extern unsigned g_vid_acquire_fail, g_vid_present_fail, g_vid_presented; extern int g_vid_last_err;

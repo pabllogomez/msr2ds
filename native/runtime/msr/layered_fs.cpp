@@ -19,6 +19,7 @@
 #include <vector>
 #include "dump.h"
 #include "msr.h"
+#include "achievements.h"
 #include "mods.h"
 #include "patch.h"
 
@@ -742,6 +743,7 @@ extern "C" void msr_romfs_note_read(uint64_t offset, uint64_t length) {
         if (ms >= 1) std::fprintf(stderr, "where: %s, %.1f MB, read in %.0f ms\n", it->path.c_str(), static_cast<double>(it->size) / 1048576.0, ms);
         else std::fprintf(stderr, "where: %s, %.1f MB\n", it->path.c_str(), static_cast<double>(it->size) / 1048576.0);
         msr_discord_scenario(it->path.c_str());   // an area's package: Discord Rich Presence's area (discord.cpp)
+        msr_achievements_scenario(it->path.c_str());   // and the achievements' (achievements.cpp)
     }
 }
 

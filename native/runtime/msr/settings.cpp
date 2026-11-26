@@ -78,6 +78,8 @@ void PlayerSettings::Load(const std::string& path) {
         language = 1;   // English
     }
     flag("discord_presence", discord_presence);
+    flag("achievements", achievements);
+    flag("achievement_notices", achievement_notices);
     flag("original_3ds", original_3ds);
     flag("custom_video", custom_video);
     custom_resolution = std::clamp(static_cast<int>(file.Number("General", "custom_resolution", custom_resolution)), 0, 10);
@@ -138,6 +140,8 @@ void PlayerSettings::Save(const std::string& path) const {
     flag("infinite_aeion", infinite_aeion);
     number("language", language);
     flag("discord_presence", discord_presence);
+    flag("achievements", achievements);
+    flag("achievement_notices", achievement_notices);
     flag("original_3ds", original_3ds);
     flag("custom_video", custom_video);
     number("custom_resolution", custom_resolution);
