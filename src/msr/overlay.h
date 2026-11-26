@@ -74,6 +74,8 @@ struct PlayerSettings {
     bool infinite_aeion = false;
     int language = 1; ///< The game's text: a 3DS system language, one of Languages (msr-native)
     bool discord_presence = true; ///< msr-native: Discord Rich Presence (runtime/msr/discord.cpp)
+    bool achievements = false;        ///< msr-native: local achievements (runtime/msr/achievements.cpp), off by default
+    bool achievement_notices = false; ///< msr-native: their notice over the game when one unlocks
     /// msr-native: 3DS mode, from the game's next start (Presentation::original). Never on by default, and no preset
     /// turns it on.
     bool original_3ds = false;

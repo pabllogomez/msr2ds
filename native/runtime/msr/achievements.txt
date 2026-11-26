@@ -1,0 +1,54 @@
+# msr-native's achievements (runtime/msr/achievements.cpp): local only, kept in user/msr/achievements.ini, never sent
+# anywhere. Inspired by Metroid II's set on RetroAchievements, fitted to the remake. This file is built into the program;
+# an achievements.txt beside settings.ini replaces it (same format), so the list can be changed without a new build.
+#
+#   id | category | name | description | condition & condition & ...
+#
+# Conditions (achievements_eval.h):
+#   item ITEM_NAME >= N     an item of Samus's inventory (1 for an upgrade she has, a count for capacities)
+#   scenario s010_area1     the map she is in (packs/maps/<folder>)
+#   metroids_left <= N      the Metroids left, as the touch screen's bar counts them
+#
+# Every item name below is one the game has (its dump's strings, 2026-11-26). Energy Tanks have no item of their own:
+# ITEM_MAX_LIFE is the most energy, 99 and 100 for each tank (UNVERIFIED, docs/conquistas-estado-do-jogo.md). The log
+# names, at the first moment in play, every item name found ("achievements: the game's item names: ...") and each name
+# of this list whose key global was not found.
+
+# ---- Items (Metroid II's) ----
+bomb         | Items | Bombs Away       | Find the Morph Ball Bombs.                        | item ITEM_WEAPON_BOMB >= 1
+ice_beam     | Items | Cold Front       | Find the Ice Beam.                                | item ITEM_WEAPON_ICE_BEAM >= 1
+spider_ball  | Items | Wall Crawler     | Find the Spider Ball.                             | item ITEM_SPIDER_BALL >= 1
+varia_suit   | Items | Heat Proof       | Find the Varia Suit.                              | item ITEM_VARIA_SUIT >= 1
+wave_beam    | Items | Through the Wall | Find the Wave Beam.                               | item ITEM_WEAPON_WAVE_BEAM >= 1
+high_jump    | Items | Spring Step      | Find the High Jump Boots.                         | item ITEM_HIGH_JUMP_BOOTS >= 1
+spring_ball  | Items | Bounce           | Find the Spring Ball.                             | item ITEM_SPRING_BALL >= 1
+space_jump   | Items | No Ceiling       | Find the Space Jump.                              | item ITEM_SPACE_JUMP >= 1
+spazer       | Items | Three Abreast    | Find the Spazer Beam.                             | item ITEM_WEAPON_SPAZER_BEAM >= 1
+plasma_beam  | Items | Straight Through | Find the Plasma Beam.                             | item ITEM_WEAPON_PLASMA_BEAM >= 1
+screw_attack | Items | Spinning Blade   | Find the Screw Attack.                            | item ITEM_SCREW_ATTACK >= 1
+energy_tank  | Items | Reserve Power    | Find an Energy Tank.                              | item ITEM_MAX_LIFE >= 199
+
+# ---- Items the remake added ----
+grapple_beam | Remake | Hooked           | Find the Grapple Beam.                            | item ITEM_WEAPON_GRAPPLE_BEAM >= 1
+gravity_suit | Remake | Deep Water       | Find the Gravity Suit.                            | item ITEM_GRAVITY_SUIT >= 1
+super_missile| Remake | Heavy Ordnance   | Find the Super Missiles.                          | item ITEM_WEAPON_SUPER_MISSILE_MAX >= 1
+power_bomb   | Remake | Big Bang         | Find the Power Bombs.                             | item ITEM_WEAPON_POWER_BOMB_MAX >= 1
+scan_pulse   | Remake | Lay of the Land  | Learn the Scan Pulse.                             | item ITEM_SPECIAL_ENERGY_SCANNING_PULSE >= 1
+lightning    | Remake | Shock Absorber   | Learn the Lightning Armor.                        | item ITEM_SPECIAL_ENERGY_ENERGY_SHIELD >= 1
+beam_burst   | Remake | Rapid Fire       | Learn the Beam Burst.                             | item ITEM_SPECIAL_ENERGY_ENERGY_WAVE >= 1
+phase_drift  | Remake | Slow Motion      | Learn the Phase Drift.                            | item ITEM_SPECIAL_ENERGY_PHASE_DISPLACEMENT >= 1
+
+# ---- Collectibles ----
+missiles_50  | Collectibles | Stocked Up    | Carry 50 Missiles.                            | item ITEM_WEAPON_MISSILE_MAX >= 50
+missiles_100 | Collectibles | Arsenal       | Carry 100 Missiles.                           | item ITEM_WEAPON_MISSILE_MAX >= 100
+missiles_175 | Collectibles | Full Magazine | Carry 175 Missiles, the most there is.        | item ITEM_WEAPON_MISSILE_MAX >= 175
+energy_tanks | Collectibles | Iron Will     | Find all 10 Energy Tanks.                     | item ITEM_MAX_LIFE >= 1099
+
+# ---- Metroids ----
+# The inventory counts the Metroids defeated, not their kind: Metroid II's Gamma, Zeta and Omega achievements are
+# milestones of that count until a kind can be told (docs/conquistas-estado-do-jogo.md).
+first_metroid| Metroids | First Contact | Defeat a Metroid.                              | item ITEM_METROID_COUNT >= 1
+metroids_10  | Metroids | Exterminator  | Defeat 10 Metroids.                            | item ITEM_METROID_COUNT >= 10
+metroids_25  | Metroids | Nearly Extinct| Defeat 25 Metroids.                            | item ITEM_METROID_COUNT >= 25
+metroids_all | Metroids | Last of Them  | Bring the Metroid counter down to zero.        | metroids_left <= 0
+queen        | Metroids | Long Live     | Return to the surface after the Queen.         | scenario s110_surfaceb
