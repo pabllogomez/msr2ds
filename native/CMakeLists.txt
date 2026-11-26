@@ -194,7 +194,7 @@ set(MSR_NATIVE_SOURCES
   runtime/msr/textures.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../src/common/cityhash.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../src/msr/touch_nav.cpp
   runtime/msr/ini.cpp runtime/msr/user_move.cpp runtime/msr/mods.cpp runtime/msr/patch.cpp runtime/msr/layered_fs.cpp runtime/msr/overlay_host.cpp
-  runtime/msr/launcher.cpp runtime/msr/discord.cpp
+  runtime/msr/launcher.cpp runtime/msr/discord.cpp runtime/msr/achievements.cpp runtime/msr/achievements_eval.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/../src/msr/overlay.cpp
   ${SHO}/pica.vert.inc ${SHO}/pica_vs.vert.inc ${SHO}/pica.frag.inc
   ${SHO}/present.vert.inc ${SHO}/present.frag.inc
@@ -276,6 +276,12 @@ add_custom_target(msr-build-info
     BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/build_info.h VERBATIM)
 add_dependencies(msr-native msr-build-info)
 target_include_directories(msr-native PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+# The achievements' list (runtime/msr/achievements.txt) built into the program as a string: achievements_list.inc
+file(READ ${CMAKE_CURRENT_SOURCE_DIR}/runtime/msr/achievements.txt MSR_ACHIEVEMENTS_TEXT)
+string(REPLACE "\r" "" MSR_ACHIEVEMENTS_TEXT "${MSR_ACHIEVEMENTS_TEXT}")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/achievements_list.inc.tmp "R\"msrlist(${MSR_ACHIEVEMENTS_TEXT})msrlist\"\n")
+configure_file(${CMAKE_CURRENT_BINARY_DIR}/achievements_list.inc.tmp ${CMAKE_CURRENT_BINARY_DIR}/achievements_list.inc COPYONLY)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/runtime/msr/achievements.txt)
 # Saved vertex shaders (pwr_shaders.bin) stay valid while their generator is the same: its source's hash, not the build time
 file(READ ${CMAKE_CURRENT_SOURCE_DIR}/runtime/pica_vsgen.c MSR_VSGEN_TEXT)
 string(REPLACE "\r" "" MSR_VSGEN_TEXT "${MSR_VSGEN_TEXT}")
