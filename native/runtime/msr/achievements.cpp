@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <cfloat>
 #include <chrono>
+#include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -66,7 +67,7 @@ bool started = false, scanned = false, cheat_noted = false;
 std::mutex lock;   // the scenario (the file system's thread) and the notices (the overlay's)
 std::string scenario;
 struct Notice {
-    std::string name, description;
+    std::string category, name, description;
 };
 std::deque<Notice> notices;
 double notice_shown = -1.0;
@@ -138,7 +139,7 @@ void Unlock(const A::Achievement& a, bool notice) {
     }
     if (notice) {
         std::scoped_lock hold{lock};
-        notices.push_back({a.name, a.description});
+        notices.push_back({a.category, a.name, a.description});
     }
 }
 
@@ -151,6 +152,55 @@ std::string ScenarioOf(const char* path) {
     if (!slash) return {};
     const std::string name(folder, slash);
     return std::strcmp(slash + 1, (name + ".pkg").c_str()) == 0 ? name : std::string();
+}
+// The notice's badge: a hexagon in the category's color with its mark, drawn (no image: nothing from the game or from
+// anywhere else). Items a diamond, Remake a four-pointed star, Collectibles a plus, Metroids a crosshair, any other
+// category (a player's own list) a dot.
+void DrawBadge(ImDrawList* draw, ImVec2 c, float r, const std::string& category, float alpha) {
+    struct Style {
+        const char* category;
+        ImU32 rgb;
+    };
+    static constexpr Style Styles[] = {{"Items", IM_COL32(60, 170, 255, 0)},
+                                       {"Remake", IM_COL32(170, 110, 255, 0)},
+                                       {"Collectibles", IM_COL32(60, 210, 140, 0)},
+                                       {"Metroids", IM_COL32(255, 170, 50, 0)}};
+    ImU32 rgb = IM_COL32(150, 165, 180, 0);
+    int mark = -1;
+    for (int i = 0; i < 4; ++i)
+        if (category == Styles[i].category) rgb = Styles[i].rgb, mark = i;
+    const auto with = [alpha](ImU32 color, float a) { return color | (static_cast<ImU32>(255 * a * alpha) << IM_COL32_A_SHIFT); };
+    ImVec2 hex[6];
+    for (int i = 0; i < 6; ++i) {
+        const float angle = 3.14159265f / 3.f * static_cast<float>(i) + 3.14159265f / 6.f;
+        hex[i] = {c.x + r * std::cos(angle), c.y + r * std::sin(angle)};
+    }
+    draw->AddConvexPolyFilled(hex, 6, with(rgb, .35f));
+    draw->AddPolyline(hex, 6, with(rgb, 1.f), ImDrawFlags_Closed, std::max(1.5f, r * .1f));
+    const ImU32 ink = with(IM_COL32(255, 255, 255, 0), 1.f);
+    const float m = r * .45f, line = std::max(1.5f, r * .12f);
+    switch (mark) {
+    case 0: draw->AddQuadFilled({c.x, c.y - m}, {c.x + m * .7f, c.y}, {c.x, c.y + m}, {c.x - m * .7f, c.y}, ink); break;
+    case 1: {
+        ImVec2 star[8];
+        for (int i = 0; i < 8; ++i) {
+            const float angle = 3.14159265f / 4.f * static_cast<float>(i) - 3.14159265f / 2.f, k = i % 2 ? m * .35f : m;
+            star[i] = {c.x + k * std::cos(angle), c.y + k * std::sin(angle)};
+        }
+        for (int i = 0; i < 8; i += 2) draw->AddTriangleFilled(c, star[i], star[(i + 1) % 8], ink), draw->AddTriangleFilled(c, star[(i + 7) % 8], star[i], ink);
+        break;
+    }
+    case 2:
+        draw->AddRectFilled({c.x - m, c.y - line}, {c.x + m, c.y + line}, ink);
+        draw->AddRectFilled({c.x - line, c.y - m}, {c.x + line, c.y + m}, ink);
+        break;
+    case 3:
+        draw->AddCircle(c, m * .75f, ink, 0, line);
+        draw->AddLine({c.x - m, c.y}, {c.x + m, c.y}, ink, line * .7f);
+        draw->AddLine({c.x, c.y - m}, {c.x, c.y + m}, ink, line * .7f);
+        break;
+    default: draw->AddCircleFilled(c, m * .4f, ink); break;
+    }
 }
 } // namespace
 
@@ -229,11 +279,13 @@ extern "C" void msr_achievements_draw(float scale, float width, float height) {
     const ImVec2 h = font->CalcTextSizeA(head, FLT_MAX, 0.f, heading);
     const ImVec2 a = font->CalcTextSizeA(title, FLT_MAX, wrap, n.name.c_str());
     const ImVec2 b = font->CalcTextSizeA(body, FLT_MAX, wrap, n.description.c_str());
-    const float w = std::max({h.x, a.x, b.x}), gap = 4.f * scale;
+    const float w = std::max({h.x, a.x, b.x}), gap = 4.f * scale, tall = h.y + a.y + b.y + 2 * gap;
+    const float badge = std::min(tall, 64.f * scale);   // (the badge's width, left of the text)
     const ImVec2 at{width - 18.f * scale - pad - w, 18.f * scale + pad};
     auto* draw = ImGui::GetForegroundDrawList();
-    draw->AddRectFilled({at.x - pad, at.y - pad}, {at.x + w + pad, at.y + h.y + a.y + b.y + 2 * gap + pad},
+    draw->AddRectFilled({at.x - pad - badge - pad, at.y - pad}, {at.x + w + pad, at.y + tall + pad},
                         IM_COL32(4, 14, 22, static_cast<int>(200 * alpha)), 6.f * scale);
+    DrawBadge(draw, {at.x - pad - badge / 2.f, at.y + tall / 2.f}, badge * .48f, n.category, alpha);
     draw->AddText(font, head, at, IM_COL32(90, 200, 255, static_cast<int>(255 * alpha)), heading);
     draw->AddText(font, title, {at.x, at.y + h.y + gap}, IM_COL32(255, 255, 255, static_cast<int>(255 * alpha)),
                   n.name.c_str(), nullptr, wrap);
